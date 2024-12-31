@@ -52,18 +52,26 @@ mongoose
   .catch((err) => console.log("err=>", err));
 
 app.get("/", (req, res) => {
-  res.status(200).send("Server is running Good");
+  res.status(200).send("Welcome to GET API:Server is running Good");
+});
+
+app.post("/", (req, res) => {
+  const { email, password, role } = req.body;
+  res.send("Welcome to POST API");
+});
+
+app.put("/", (req, res) => {
+  res.send("Welcome to PUT API");
+});
+
+app.delete("/", (req, res) => {
+  res.send("Welcome to DELETE API");
 });
 
 // akele akele sb routes use karne ka tariqa
+// app.use("/task", taskRoutes);
 app.use("/user", userRoutes);
-app.use("/task", taskRoutes);
 app.use("/auth", authRoutes);
-
-app.post("/", (req, res) => {
-  const { email, password, role } = req.body
-  res.send("Welcome to POST API");
-});
 
 // params
 // app.get("/singletask/:id", (req, res) => {
@@ -81,14 +89,6 @@ app.post("/", (req, res) => {
 //       completed == "1" ? data.completed == true : data.completed == false
 //     );
 //   res.status(200).send(filter);
-// });
-
-// app.put("/", (req, res) => {
-//   res.send("Welcome to PUT API");
-// });
-
-// app.delete("/", (req, res) => {
-//   res.send("Welcome to DELETE API");
 // });
 
 app.listen(PORT, () => console.log("Server Started on port " + PORT));

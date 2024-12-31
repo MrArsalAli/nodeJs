@@ -1,4 +1,8 @@
 import express from "express";
+import sendResponse from "../helpers/sendResponse.js";
+import "dotenv/config";
+import User from "../models/User.js";
+import { authenticateUser } from "../middleware/authentication.js";
 const router = express.Router();
 
 const users = [
@@ -9,7 +13,7 @@ const users = [
   },
 ];
 
-// get all users 
+// get all users
 router.get("/", (req, res) => {
   res.status(200).json({
     error: false,
@@ -18,8 +22,7 @@ router.get("/", (req, res) => {
   });
 });
 
-
-// register new users 
+// register new users
 router.post("/", (req, res) => {
   const { fullname, email } = req.body;
   users.push({ fullname, email, id: users.length + 1 });
@@ -30,8 +33,7 @@ router.post("/", (req, res) => {
   });
 });
 
-
-// get single user 
+// get single user
 router.get("/:id", (req, res) => {
   const user = users.find((data) => data.id == req.params.id);
   if (!user) {
@@ -47,6 +49,20 @@ router.get("/:id", (req, res) => {
     data: user,
     msg: "User found successfully",
   });
+});
+
+router.put("/", authenticateUser, async (req, res) => {
+  try {
+    const { city, country } = req.body;
+    const user = await User.findOneAndUpdate(
+      { _id: req.user._id },
+      { city, country },
+      { new: true }
+    ).exec(true);
+    sendResponse(res, 200, user, false, "User Updated Successfully");
+  } catch (error) {
+    sendResponse(res, 404, null, true, "Error on PUT API");
+  }
 });
 
 export default router;
